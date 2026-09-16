@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Physical-simulation demos of certified multi-robot controllers, paired with the natural-language requirement each was synthesized from.">
+  <meta name="keywords" content="LLM, GR(1) synthesis, assume-guarantee contracts, multi-robot systems, neuro-symbolic">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ContrAuto</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%A4%96</text></svg>">
+
+  <style>
+    body { font-family: 'Noto Sans', sans-serif; }
+    .publication-title, .publication-authors { font-family: 'Google Sans', 'Noto Sans', sans-serif; }
+    .publication-venue { color: #2f5d8a; font-weight: 700; }
+    .publication-status { color: #6b6558; }
+    .link-block a { margin: 5px; }
+    section.results { border-top: 1px solid #ececec; }
+    section.results .title.is-2 { text-align: center; padding-bottom: .3rem; }
+    .task-intro { max-width: 62rem; margin: 0 auto 1.6rem; text-align: center; color: #4a4a4a; }
+    .task-tag {
+      display: inline-block; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
+      color: #a85a1d; background: #f4e9dc; padding: 3px 10px; border-radius: 999px; margin-bottom: .6rem;
+    }
+    .video-row { display:flex; flex-wrap:wrap; justify-content:center; gap: 22px; margin-bottom: 1.4rem; }
+    .video-col { width: 300px; max-width: 100%; text-align: center; }
+    .video-col img {
+      width: 100%; border-radius: 10px; border: 1px solid #bbb; display:block;
+      background:#f5f5f5;
+    }
+    .video-col .n-label {
+      margin-top: 8px; font-weight: 600; color: #363636; font-size: .95rem;
+    }
+    details.spec { max-width: 62rem; margin: 0 auto 1.8rem; }
+    details.spec summary {
+      cursor: pointer; text-align:center; color:#2f5d8a; font-weight:600; font-size:.85rem;
+      letter-spacing:.03em; text-transform:uppercase;
+    }
+    details.spec ul { background:#f5f5f5; border-radius: 8px; padding: 16px 20px 16px 40px; margin-top: 12px; color:#4a4a4a; font-size:.92rem; }
+    details.spec li { margin-bottom: 8px; }
+    details.spec li:last-child { margin-bottom: 0; }
+    .note-line { max-width: 62rem; margin: 0 auto; text-align:center; font-style: italic; color:#8a8378; font-size:.85rem; }
+    footer.footer { background:#fafafa; }
+    .cite-block {
+      background:#2b2b2b; color:#e8e8e8; border-radius:8px; padding:18px 22px;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size:.8rem;
+      overflow-x:auto; white-space:pre; max-width: 62rem; margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-10">
+          <h1 class="title is-2 publication-title">
+            🤖 ContrAuto
+          </h1>
+          <h1 class="title is-4 publication-title" style="font-weight:400; margin-top:-.5rem;">
+            Neuro-Symbolic Task Decomposition for Reactive Multi-Agent<br>
+            Controller Synthesis via Traceable Refinement
+          </h1>
+          <h2 class="subtitle is-5 publication-venue" style="margin-top:.8rem;">
+            Under review · ICLR 2027
+          </h2>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Yifeng Xiao<sup>1</sup></span>,
+            <span class="author-block">Zhiyu Ni<sup>1</sup></span>,
+            <span class="author-block">Dinghong Song<sup>2</sup></span>,
+            <span class="author-block">Mi Zhou<sup>3</sup></span>,
+            <span class="author-block">Pierluigi Nuzzo<sup>1</sup></span>
+          </div>
+          <div class="is-size-6 publication-status" style="margin-top:.4rem;">
+            <sup>1</sup>University of California, Berkeley&emsp;<sup>2</sup>University of California, Merced&emsp;<sup>3</sup>Georgia Institute of Technology
+          </div>
+          <div class="is-size-6 publication-status" style="margin-top:.2rem;">
+            <a href="mailto:yifeng_xiao@berkeley.edu">yifeng_xiao@berkeley.edu</a>,
+            <a href="mailto:zhiyuni@berkeley.edu">zhiyuni@berkeley.edu</a>,
+            <a href="mailto:pierluigi.nuzzo@berkeley.edu">pierluigi.nuzzo@berkeley.edu</a>;
+            <a href="mailto:dsong15@ucmerced.edu">dsong15@ucmerced.edu</a>;
+            <a href="mailto:mzhou91@gatech.edu">mzhou91@gatech.edu</a>
+          </div>
+
+          <div class="column has-text-centered" style="margin-top:1.2rem;">
+            <div class="link-block">
+              <span class="link-block">
+                <a href="https://github.com/dinghongsong26/ContrAuto" target="_blank"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Demo site source</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-2">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Using large language models (LLMs) to turn a natural-language requirement for a multi-agent system into
+            controllers that remain correct under shared-resource contention presents a key challenge: LLMs can
+            readily decompose tasks but provide no correctness guarantees, whereas reactive synthesis is correct by
+            construction but requires hand-written specifications. We introduce a neuro-symbolic framework in which
+            LLMs translate and decompose the NL requirements into per-agent Assume&#8209;Guarantee (A/G) contracts and
+            a pipeline of certificate-ladder checks (specification grounding, compositional decomposition with
+            mechanical contract completion, GR(1) synthesis with strategy validation, and runtime conformance) &mdash;
+            a decomposition has no unique ground truth. Each failed check returns a witness traceable to one
+            contract, driving targeted LLM repair. Certified controller strategies execute on a simulated
+            control-barrier-function layer and hold mutual exclusion and freedom from starvation against every
+            environment interleaving. If execution fails, runtime conformance feeds the detected violations back into
+            the LLM repair process.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section results" id="charger">
+  <div class="container">
+    <h2 class="title is-2">Shared Charging Station</h2>
+    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Resource: charging station · capacity 1</span>
+    <p class="task-intro">
+      N robots keep working until their battery runs low. During every low-battery episode a robot requests the
+      shared charger, drives to it, and charges once it holds exclusive access &mdash; the arbiter guarantees fair,
+      mutually-exclusive service so no robot is ever left waiting forever.
+    </p>
+    <details class="spec">
+      <summary>Full requirement spec (charger.yaml)</summary>
+      <ul>
+        <li>Each robot works. During every low-battery episode it requests the shared charger, drives to it, and charges once access and the charger location are available.</li>
+        <li>A robot must hold the charging station's exclusive access before it starts charging.</li>
+        <li>At most one robot may charge at the station at a time.</li>
+        <li>A robot can charge only while it is at the charging station.</li>
+        <li>A robot drives to the charger only while it is requesting and its battery remains low.</li>
+        <li>If a robot remains low-battery, is still requesting, and is not at the charger, it keeps driving back until it arrives; once arrived while still requesting, it is not displaced before grant.</li>
+        <li>The arbiter provides fair exclusive access: every request that remains asserted is eventually granted, and a grant persists only while the matching request persists.</li>
+        <li>Robot count N is varied across 3, 5 and 7 to test how the certificate ladder and synthesis scale with team size.</li>
+      </ul>
+    </details>
+    <div class="video-row">
+      <div class="video-col">
+        <img src="assets/gifs/charger_n3.gif" loading="lazy" alt="Physical simulation of 3 robots sharing a charging station">
+        <div class="n-label">N = 3</div>
+      </div>
+      <div class="video-col">
+        <img src="assets/gifs/charger_n5.gif" loading="lazy" alt="Physical simulation of 5 robots sharing a charging station">
+        <div class="n-label">N = 5</div>
+      </div>
+      <div class="video-col">
+        <img src="assets/gifs/charger_n7.gif" loading="lazy" alt="Physical simulation of 7 robots sharing a charging station">
+        <div class="n-label">N = 7</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section results" id="corridor">
+  <div class="container">
+    <h2 class="title is-2">Corridor Contention</h2>
+    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Resource: single-lane corridor · passage-type lock</span>
+    <p class="task-intro">
+      Robots cross a single-lane corridor from side A to side B whenever the world demands a crossing. Only one
+      robot may be inside at a time, and once the arbiter grants access it holds that grant for the whole crossing
+      &mdash; never revoking it mid-passage &mdash; while still guaranteeing every standing demand is eventually
+      served.
+    </p>
+    <details class="spec">
+      <summary>Full requirement spec (corridor.yaml)</summary>
+      <ul>
+        <li>Each robot crosses from side A through the corridor to side B when the world demands a crossing.</li>
+        <li>A robot must hold the corridor's exclusive access before it enters and starts crossing.</li>
+        <li>At most one robot may be inside the corridor at a time.</li>
+        <li>A robot is inside the corridor (crossing) only while it holds the corridor access.</li>
+        <li>Once granted, the arbiter keeps that grant for as long as the demand stands &mdash; no revoking a standing access mid-crossing (hold until release).</li>
+        <li>Every standing access demand is eventually granted; no robot's demand starves.</li>
+        <li>The crossing demand is raised and withdrawn by the world, not chosen by the robots, and keeps recurring.</li>
+      </ul>
+    </details>
+    <div class="video-row">
+      <div class="video-col">
+        <img src="assets/gifs/corridor_n3.gif" loading="lazy" alt="Physical simulation of 3 robots contending for a single-lane corridor">
+        <div class="n-label">N = 3</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section results" id="multi-robot">
+  <div class="container">
+    <h2 class="title is-2">Shared Shelf &amp; Dock</h2>
+    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Resources: shelf &amp; dock · independent arbiters</span>
+    <p class="task-intro">
+      N robots continuously fetch items from a shared shelf and deliver them to a shared dock. Two independent
+      arbiters &mdash; one per resource &mdash; grant exclusive access, since holding the shelf and holding the dock
+      are never mutually exclusive with each other. A robot may travel and wait freely; only the final pickup or
+      drop-off step requires the matching grant, and every request is eventually served.
+    </p>
+    <details class="spec">
+      <summary>Full requirement spec (multi_robot.yaml)</summary>
+      <ul>
+        <li>Each robot repeatedly fetches an item from the shelf and delivers it to the dock.</li>
+        <li>A robot must hold the shelf's exclusive access before picking up; it may navigate toward the dock as soon as it is carrying an item without needing the dock's grant just to travel there or wait nearby &mdash; only entering/occupying the dock to drop off requires the grant.</li>
+        <li>A shelf arbiter and a separate dock arbiter each grant at most one robot at a time on their own resource; the two arbiters do not constrain each other, and a robot may hold both grants at once.</li>
+        <li>Each arbiter provides fair access: every standing request is eventually granted, and a grant persists while the request persists (no one-step pulses).</li>
+        <li>After completing pickup or dropoff, a robot releases its resource request and lease immediately, so the arbiter can serve the next waiting robot without delay.</li>
+        <li>A robot can pick up only while at the shelf, and drop off only while at the dock carrying an item.</li>
+        <li>Each robot should keep completing deliveries indefinitely.</li>
+        <li>Robot count N is varied across 3, 4 and 5 to stress-test the two-arbiter decomposition.</li>
+      </ul>
+    </details>
+    <div class="video-row">
+      <div class="video-col">
+        <img src="assets/gifs/multi_robot_n3.gif" loading="lazy" alt="Physical simulation of 3 robots sharing a shelf and dock">
+        <div class="n-label">N = 3</div>
+      </div>
+      <div class="video-col">
+        <img src="assets/gifs/multi_robot_n5.gif" loading="lazy" alt="Physical simulation of 5 robots sharing a shelf and dock">
+        <div class="n-label">N = 5</div>
+      </div>
+    </div>
+    <p class="note-line">N = 4 is being re-generated in the source repository right now and will be added once the new run finishes.</p>
+  </div>
+</section>
+
+<section class="section results" id="two-layer-dock">
+  <div class="container">
+    <h2 class="title is-2">Two-Layer Dock</h2>
+    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Resource: shared dock · independent pickup points</span>
+    <p class="task-intro">
+      Each robot fetches items from its own, unshared pickup location but must deliver to one shared dock. A single
+      arbiter grants exclusive dock access so only one robot occupies it at a time, fairly serving every standing
+      request so deliveries keep completing indefinitely.
+    </p>
+    <details class="spec">
+      <summary>Full requirement spec (two_layer_dock.yaml)</summary>
+      <ul>
+        <li>Each robot repeatedly fetches an item from its pickup location and delivers it to the shared dock.</li>
+        <li>A robot must hold the dock's exclusive access before using the dock.</li>
+        <li>At most one robot may hold the dock at a time.</li>
+        <li>A robot can pick up only while at its pickup location, and drop off only while at the dock carrying an item.</li>
+        <li>Each robot does one thing at a time and should keep completing deliveries indefinitely.</li>
+        <li>World behaviour: when a robot heads somewhere it eventually arrives; a standing request for dock access is eventually granted; new tasks keep arriving over time.</li>
+      </ul>
+    </details>
+    <div class="video-row">
+      <div class="video-col">
+        <img src="assets/gifs/two_layer_dock_n4.gif" loading="lazy" alt="Physical simulation of 4 robots delivering to a shared dock">
+        <div class="n-label">N = 4</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p style="color:#6b6558; font-size:.9rem;">
+        Demos rendered from this repository's <code>outputs/</code> physical-simulation runs; requirement text is
+        copied verbatim from the corresponding files in <code>contrauto/tasks/</code>.
+      </p>
+      <div class="cite-block">@inproceedings{anonymous2027neurosymbolic,
+  title={Neuro-Symbolic Task Decomposition for Reactive Multi-Agent Controller Synthesis via Traceable Refinement},
+  author={Anonymous},
+  booktitle={Under review, ICLR},
+  year={2027}
+}</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
