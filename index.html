@@ -15,15 +15,17 @@
   <style>
     body { font-family: 'Noto Sans', sans-serif; }
     .publication-title, .publication-authors { font-family: 'Google Sans', 'Noto Sans', sans-serif; }
-    .publication-venue { color: #2f5d8a; font-weight: 700; }
-    .publication-status { color: #6b6558; }
+    .publication-venue { color: #555; font-weight: 700; }
+    .publication-status { color: #555; }
+    .publication-status a { color: hsl(204, 86%, 53%) !important; }
+    .publication-status a:hover { text-decoration: underline; }
     .link-block a { margin: 5px; }
     section.results { border-top: 1px solid #ececec; }
     section.results .title.is-2 { text-align: center; padding-bottom: .3rem; }
     .task-intro { max-width: 62rem; margin: 0 auto 1.6rem; text-align: center; color: #4a4a4a; }
     .task-tag {
       display: inline-block; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
-      color: #a85a1d; background: #f4e9dc; padding: 3px 10px; border-radius: 999px; margin-bottom: .6rem;
+      color: #555; background: #f5f5f5; padding: 3px 10px; border-radius: 999px; margin-bottom: .6rem;
     }
     .video-row { display:flex; flex-wrap:wrap; justify-content:center; gap: 22px; margin-bottom: 1.4rem; }
     .video-col { width: 300px; max-width: 100%; text-align: center; }
@@ -36,16 +38,17 @@
     }
     details.spec { max-width: 62rem; margin: 0 auto 1.8rem; }
     details.spec summary {
-      cursor: pointer; text-align:center; color:#2f5d8a; font-weight:600; font-size:.85rem;
+      cursor: pointer; text-align:center; color: hsl(204, 86%, 53%); font-weight:600; font-size:.85rem;
       letter-spacing:.03em; text-transform:uppercase;
     }
+    details.spec summary:hover { text-decoration: underline; }
     details.spec ul { background:#f5f5f5; border-radius: 8px; padding: 16px 20px 16px 40px; margin-top: 12px; color:#4a4a4a; font-size:.92rem; }
     details.spec li { margin-bottom: 8px; }
     details.spec li:last-child { margin-bottom: 0; }
-    .note-line { max-width: 62rem; margin: 0 auto; text-align:center; font-style: italic; color:#8a8378; font-size:.85rem; }
+    .note-line { max-width: 62rem; margin: 0 auto; text-align:center; font-style: italic; color:#555; font-size:.85rem; }
     footer.footer { background:#fafafa; }
     .cite-block {
-      background:#2b2b2b; color:#e8e8e8; border-radius:8px; padding:18px 22px;
+      background:#f5f5f5; color:#363636; border: 1px solid #ececec; border-radius:8px; padding:18px 22px;
       font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size:.8rem;
       overflow-x:auto; white-space:pre; max-width: 62rem; margin: 0 auto;
     }
