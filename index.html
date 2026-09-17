@@ -38,8 +38,9 @@
       letter-spacing:.03em; text-transform:uppercase;
     }
     details.spec summary:hover { text-decoration: underline; }
-    details.spec ul { background:#f5f5f5; border-radius: 8px; padding: 16px 20px 16px 40px; margin-top: 12px; color:#4a4a4a; font-size:.92rem; }
-    details.spec li { margin-bottom: 8px; }
+    details.spec ul { background:#f5f5f5; border-radius: 8px; padding: 16px 20px; margin-top: 12px; color:#4a4a4a; font-size:.92rem; list-style: none; }
+    details.spec li { margin-bottom: 8px; padding-left: 1.4em; position: relative; }
+    details.spec li::before { content: "\25B8"; position: absolute; left: 0; color: hsl(204, 86%, 53%); font-weight: 700; }
     details.spec li:last-child { margin-bottom: 0; }
     .note-line { max-width: 62rem; margin: 0 auto; text-align:left; font-style: italic; color:#555; font-size:.85rem; }
     footer.footer { background:#fafafa; }
@@ -124,7 +125,7 @@
 <section class="section" id="method">
   <div class="container">
     <h2 class="title is-2" style="text-align:center;">Method</h2>
-    <figure style="max-width:100%; margin:0 auto;">
+    <figure style="max-width:640px; margin:0 auto;">
       <img src="assets/figures/figure1.png" alt="The ACCERT framework: natural-language inputs are translated and decomposed into per-agent contracts, checked through specification grounding, compositional reasoning and controller realization, executed on a physical layer with runtime conformance monitors, and any failure feeds back as structured feedback for repair." style="width:100%; height:auto; display:block; border-radius:8px; border:1px solid #ececec;">
     </figure>
   </div>
@@ -183,7 +184,7 @@
 
 <section class="section results" id="corridor">
   <div class="container">
-    <h2 class="title is-2">Corridor Contention</h2>
+    <h2 class="title is-2">Single-Lane Corridor</h2>
     <p class="task-intro">
       Robots cross a single-lane corridor from side A to side B whenever the world demands a crossing. Only one
       robot may be inside at a time, and once the arbiter grants access it holds that grant for the whole crossing,
@@ -221,7 +222,7 @@
 
 <section class="section results" id="multi-robot">
   <div class="container">
-    <h2 class="title is-2">Shared Shelf &amp; Dock</h2>
+    <h2 class="title is-2">Warehouse Shelf and Dock</h2>
     <p class="task-intro">
       N robots continuously fetch items from a shared shelf and deliver them to a shared dock. Two independent
       arbiters, one per resource, grant exclusive access, since holding the shelf and holding the dock are never
@@ -284,7 +285,6 @@
       <ul>
         <li>CHASE Framework: <a href="https://github.com/chase-cps/chase">https://github.com/chase-cps/chase</a></li>
         <li>nuXmv Model Checker: <a href="https://nuxmv.fbk.eu">https://nuxmv.fbk.eu</a></li>
-        <li>gr1c Synthesis: <a href="https://scottman.net/pub/gr1c">https://scottman.net/pub/gr1c</a></li>
         <li>Slugs GR(1): <a href="https://github.com/VerifiableRobotics/slugs">https://github.com/VerifiableRobotics/slugs</a></li>
       </ul>
       <p style="margin-top:1.2rem;">
