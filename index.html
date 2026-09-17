@@ -23,10 +23,6 @@
     section.results { border-top: 1px solid #ececec; }
     section.results .title.is-2 { text-align: center; padding-bottom: .3rem; }
     .task-intro { max-width: 62rem; margin: 0 auto 1.6rem; text-align: center; color: #4a4a4a; }
-    .task-tag {
-      display: inline-block; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
-      color: #555; background: #f5f5f5; padding: 3px 10px; border-radius: 999px; margin-bottom: .6rem;
-    }
     .video-row { display:flex; flex-wrap:wrap; justify-content:center; gap: 22px; margin-bottom: 1.4rem; }
     .video-col { width: 300px; max-width: 100%; text-align: center; }
     .video-col img {
@@ -117,8 +113,8 @@
             construction but requires hand-written specifications. We introduce a neuro-symbolic framework in which
             LLMs translate and decompose the NL requirements into per-agent Assume&#8209;Guarantee (A/G) contracts and
             a pipeline of certificate-ladder checks (specification grounding, compositional decomposition with
-            mechanical contract completion, GR(1) synthesis with strategy validation, and runtime conformance) &mdash;
-            a decomposition has no unique ground truth. Each failed check returns a witness traceable to one
+            mechanical contract completion, GR(1) synthesis with strategy validation, and runtime conformance),
+            since a decomposition has no unique ground truth. Each failed check returns a witness traceable to one
             contract, driving targeted LLM repair. Certified controller strategies execute on a simulated
             control-barrier-function layer and hold mutual exclusion and freedom from starvation against every
             environment interleaving. If execution fails, runtime conformance feeds the detected violations back into
@@ -133,23 +129,35 @@
 <section class="section results" id="charger">
   <div class="container">
     <h2 class="title is-2">Shared Charging Station</h2>
-    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Resource: charging station · capacity 1</span>
     <p class="task-intro">
       N robots keep working until their battery runs low. During every low-battery episode a robot requests the
-      shared charger, drives to it, and charges once it holds exclusive access &mdash; the arbiter guarantees fair,
-      mutually-exclusive service so no robot is ever left waiting forever.
+      shared charger, drives to it, and charges once it holds exclusive access. The arbiter guarantees fair,
+      mutually exclusive service, so no robot is ever left waiting forever.
     </p>
     <details class="spec">
-      <summary>Full requirement spec (charger.yaml)</summary>
+      <summary>Full requirement specification</summary>
       <ul>
-        <li>Each robot works. During every low-battery episode it requests the shared charger, drives to it, and charges once access and the charger location are available.</li>
+        <li>Each robot works.</li>
+        <li>During every low-battery episode it requests the shared charger, drives to it, and charges once access and the charger location are available.</li>
         <li>A robot must hold the charging station's exclusive access before it starts charging.</li>
         <li>At most one robot may charge at the station at a time.</li>
         <li>A robot can charge only while it is at the charging station.</li>
         <li>A robot drives to the charger only while it is requesting and its battery remains low.</li>
-        <li>If a robot remains low-battery, is still requesting, and is not at the charger, it keeps driving back until it arrives; once arrived while still requesting, it is not displaced before grant.</li>
-        <li>The arbiter provides fair exclusive access: every request that remains asserted is eventually granted, and a grant persists only while the matching request persists.</li>
-        <li>Robot count N is varied across 3, 4 and 5 to test how the certificate ladder and synthesis scale with team size.</li>
+        <li>It does not go to the charger when its battery is not low.</li>
+        <li>If a robot remains low-battery, is still requesting, and is not at the charger, it keeps driving back until it arrives.</li>
+        <li>Once it has arrived while still requesting, the world keeps it at the charger until it releases that request.</li>
+        <li>The world must not displace a waiting robot between arrival and grant.</li>
+        <li>The arbiter provides fair exclusive access: every request that remains asserted is eventually granted.</li>
+        <li>A grant remains asserted only while its matching request remains asserted.</li>
+        <li>It does not pulse for one step while that request persists.</li>
+        <li>Each robot does one thing at a time.</li>
+        <li>Its obligation is conditional: it charges only during a low-battery episode after reaching the charger with a grant.</li>
+        <li>World behaviour: each robot has infinitely many low-battery episodes.</li>
+        <li>Once a battery is low, it stays low until that robot charges.</li>
+        <li>Once charging occurs, the battery becomes not-low in the next step.</li>
+        <li>While a low-battery robot commands goto_charger, it eventually reaches the charger.</li>
+        <li>Once at the charger with a still-asserted request, it remains there until the request is released.</li>
+        <li>A request that remains asserted is eventually granted.</li>
       </ul>
     </details>
     <div class="video-row">
@@ -172,23 +180,30 @@
 <section class="section results" id="corridor">
   <div class="container">
     <h2 class="title is-2">Corridor Contention</h2>
-    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Resource: single-lane corridor · passage-type lock</span>
     <p class="task-intro">
       Robots cross a single-lane corridor from side A to side B whenever the world demands a crossing. Only one
-      robot may be inside at a time, and once the arbiter grants access it holds that grant for the whole crossing
-      &mdash; never revoking it mid-passage &mdash; while still guaranteeing every standing demand is eventually
-      served.
+      robot may be inside at a time, and once the arbiter grants access it holds that grant for the whole crossing,
+      never revoking it mid-passage, while still guaranteeing every standing demand is eventually served.
     </p>
     <details class="spec">
-      <summary>Full requirement spec (corridor.yaml)</summary>
+      <summary>Full requirement specification</summary>
       <ul>
         <li>Each robot crosses from side A through the corridor to side B when the world demands a crossing.</li>
         <li>A robot must hold the corridor's exclusive access before it enters and starts crossing.</li>
         <li>At most one robot may be inside the corridor at a time.</li>
-        <li>A robot is inside the corridor (crossing) only while it holds the corridor access.</li>
-        <li>Once granted, the arbiter keeps that grant for as long as the demand stands &mdash; no revoking a standing access mid-crossing (hold until release).</li>
-        <li>Every standing access demand is eventually granted; no robot's demand starves.</li>
-        <li>The crossing demand is raised and withdrawn by the world, not chosen by the robots, and keeps recurring.</li>
+        <li>A robot is inside the corridor, crossing, only while it holds the corridor access.</li>
+        <li>Once the arbiter grants the corridor to a robot, it keeps that grant for that robot for as long as the demand stands.</li>
+        <li>The arbiter does not revoke a standing access mid-crossing, holding it until release.</li>
+        <li>Each robot does one thing at a time.</li>
+        <li>Every standing access demand is eventually granted.</li>
+        <li>No robot's demand starves.</li>
+        <li>World behaviour: the crossing demand is raised and withdrawn by the world, not chosen by the robots.</li>
+        <li>New crossing tasks keep arriving.</li>
+        <li>Each robot's demand is infinitely often withdrawn, so no demand stands forever.</li>
+        <li>A robot stays where it is until it moves.</li>
+        <li>Being at side B is temporary: after a delivery the robot leaves side B, returning toward side A on a separate return path outside the corridor.</li>
+        <li>This means it can be demanded and can cross again.</li>
+        <li>The world does not keep a robot at side B forever.</li>
       </ul>
     </details>
     <div class="video-row">
@@ -203,24 +218,42 @@
 <section class="section results" id="multi-robot">
   <div class="container">
     <h2 class="title is-2">Shared Shelf &amp; Dock</h2>
-    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Resources: shelf &amp; dock · independent arbiters</span>
     <p class="task-intro">
       N robots continuously fetch items from a shared shelf and deliver them to a shared dock. Two independent
-      arbiters &mdash; one per resource &mdash; grant exclusive access, since holding the shelf and holding the dock
-      are never mutually exclusive with each other. A robot may travel and wait freely; only the final pickup or
-      drop-off step requires the matching grant, and every request is eventually served.
+      arbiters, one per resource, grant exclusive access, since holding the shelf and holding the dock are never
+      mutually exclusive with each other. A robot may travel and wait freely; only the final pickup or drop-off step
+      requires the matching grant, and every request is eventually served.
     </p>
     <details class="spec">
-      <summary>Full requirement spec (multi_robot.yaml)</summary>
+      <summary>Full requirement specification</summary>
       <ul>
         <li>Each robot repeatedly fetches an item from the shelf and delivers it to the dock.</li>
-        <li>A robot must hold the shelf's exclusive access before picking up; it may navigate toward the dock as soon as it is carrying an item without needing the dock's grant just to travel there or wait nearby &mdash; only entering/occupying the dock to drop off requires the grant.</li>
-        <li>A shelf arbiter and a separate dock arbiter each grant at most one robot at a time on their own resource; the two arbiters do not constrain each other, and a robot may hold both grants at once.</li>
-        <li>Each arbiter provides fair access: every standing request is eventually granted, and a grant persists while the request persists (no one-step pulses).</li>
-        <li>After completing pickup or dropoff, a robot releases its resource request and lease immediately, so the arbiter can serve the next waiting robot without delay.</li>
+        <li>A robot must request and hold the shelf's exclusive access before picking up from the shelf.</li>
+        <li>It may navigate toward its individually reserved bin while waiting.</li>
+        <li>A robot may navigate toward the dock as soon as it is carrying an item, without needing the dock's exclusive access to travel there or wait nearby.</li>
+        <li>Traveling and waiting are free.</li>
+        <li>The exclusive access is required only for the final step of entering or occupying the dock to drop off.</li>
+        <li>A robot that does not yet hold it waits just outside the dock, not entering, until it is granted.</li>
+        <li>A shelf arbiter grants the shelf to at most one robot at a time.</li>
+        <li>A separate dock arbiter grants the dock to at most one robot at a time.</li>
+        <li>The two arbiters coordinate their own resource independently.</li>
+        <li>Neither arbiter's grants or requests constrain the other's, and a robot may hold both grants at once.</li>
+        <li>Each arbiter's grant controls entry and occupancy of only its own resource.</li>
+        <li>Each arbiter provides fair access to its own resource: every request that remains asserted is eventually granted.</li>
+        <li>A grant remains asserted while its matching request remains asserted.</li>
+        <li>It must not be a one-step pulse during navigation or service.</li>
+        <li>After completing pickup or dropoff, a robot releases its matching resource request immediately, the very next step, never held an extra step past service.</li>
+        <li>Its exclusive access lease is released on that same schedule, since the lease need not outlive the request it was granted for, so the arbiter can serve the next waiting robot without delay.</li>
+        <li>Every granted lease is eventually released so another waiting robot can be served.</li>
+        <li>As soon as a robot is carrying an item, it must request the dock without delay and must not head back toward the shelf.</li>
+        <li>It heads to the dock right away, and this heading and travel action is not gated on holding the dock's exclusive access; only entering or occupying the dock to drop off is.</li>
+        <li>A robot only heads to the shelf while it is not carrying an item.</li>
         <li>A robot can pick up only while at the shelf, and drop off only while at the dock carrying an item.</li>
-        <li>Each robot should keep completing deliveries indefinitely.</li>
-        <li>Robot count N is varied across 3, 4 and 5 to stress-test the two-arbiter decomposition.</li>
+        <li>Each robot does one thing at a time and should keep completing deliveries indefinitely.</li>
+        <li>World behaviour: when a robot heads somewhere it eventually arrives.</li>
+        <li>It stays where it is until it moves.</li>
+        <li>A standing request for access is eventually granted.</li>
+        <li>New tasks keep arriving over time.</li>
       </ul>
     </details>
     <div class="video-row">
@@ -243,21 +276,23 @@
 <section class="section results" id="two-layer-dock">
   <div class="container">
     <h2 class="title is-2">Two-Layer Dock</h2>
-    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Resource: shared dock · independent pickup points</span>
     <p class="task-intro">
       Each robot fetches items from its own, unshared pickup location but must deliver to one shared dock. A single
       arbiter grants exclusive dock access so only one robot occupies it at a time, fairly serving every standing
       request so deliveries keep completing indefinitely.
     </p>
     <details class="spec">
-      <summary>Full requirement spec (two_layer_dock.yaml)</summary>
+      <summary>Full requirement specification</summary>
       <ul>
         <li>Each robot repeatedly fetches an item from its pickup location and delivers it to the shared dock.</li>
         <li>A robot must hold the dock's exclusive access before using the dock.</li>
         <li>At most one robot may hold the dock at a time.</li>
         <li>A robot can pick up only while at its pickup location, and drop off only while at the dock carrying an item.</li>
         <li>Each robot does one thing at a time and should keep completing deliveries indefinitely.</li>
-        <li>World behaviour: when a robot heads somewhere it eventually arrives; a standing request for dock access is eventually granted; new tasks keep arriving over time.</li>
+        <li>World behaviour: when a robot heads somewhere it eventually arrives.</li>
+        <li>It stays where it is until it moves.</li>
+        <li>A standing request for dock access is eventually granted.</li>
+        <li>New tasks keep arriving over time.</li>
       </ul>
     </details>
     <div class="video-row">
@@ -272,29 +307,33 @@
 <section class="section results" id="hierarchical">
   <div class="container">
     <h2 class="title is-2">Scaling with a Two-Level Arbiter Tree</h2>
-    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Architecture: two-level arbiter tree · N = 6 robots, one shared dock</span>
     <p class="task-intro">
       A single flat arbiter's certified state space grows as O(2<sup>N</sup>) with team size, since it must track
       every robot's request bit at once. Rather than making team size the limit, the framework lets the
       <em>architecture</em> add a coordination layer: six robots are split into two groups of three, each behind its
       own group arbiter, with both group arbiters reporting up to a root arbiter that owns the physical dock. Given
-      only this tree in the input architecture graph &mdash; not the group-level protocol &mdash; the LLM invents the
-      intermediate demand/grant interface itself, and the pipeline certifies the decomposition end to end on 3/3
-      seeds. At N&nbsp;=&nbsp;6 this shrinks the certified coordination kernel from 576 states (flat single arbiter)
-      to 74+74+12&nbsp;=&nbsp;160 states &mdash; roughly 7.8&times; smaller &mdash; while still guaranteeing exclusive
-      dock access and starvation-freedom at both levels of the tree.
+      only this tree in the input architecture graph, not the group-level protocol, the LLM invents the intermediate
+      demand/grant interface itself, and the pipeline certifies the decomposition end to end on 3/3 seeds. At
+      N&nbsp;=&nbsp;6 this shrinks the certified coordination kernel from 576 states (flat single arbiter) to
+      74+74+12&nbsp;=&nbsp;160 states, roughly 7.8&times; smaller, while still guaranteeing exclusive dock access and
+      starvation-freedom at both levels of the tree.
     </p>
     <details class="spec">
-      <summary>Full requirement spec (tree_dock6.yaml)</summary>
+      <summary>Full requirement specification</summary>
       <ul>
         <li>Each robot repeatedly fetches an item from its pickup location and delivers it to the shared dock.</li>
-        <li>A robot must hold its group arbiter's dock grant before using the dock; a group arbiter may only grant while it holds the root arbiter's group grant.</li>
-        <li>At most one robot in the whole team may hold the dock at a time; at most one group may hold the root grant at a time.</li>
+        <li>A robot must hold its group arbiter's dock grant before using the dock.</li>
+        <li>A group arbiter may only grant while it holds the root arbiter's group grant.</li>
+        <li>At most one robot in the whole team may hold the dock at a time.</li>
+        <li>At most one group may hold the root grant at a time.</li>
         <li>A robot can pick up only while at its pickup location, and drop off only while at the dock carrying an item.</li>
         <li>Each robot does one thing at a time and should keep completing deliveries indefinitely.</li>
-        <li>Arbiters at both levels are fair: a standing request or group demand is eventually served; arbiters assume nothing about their requesters.</li>
-        <li>A group arbiter's upward demand is a registered (one-step delayed) aggregation of its robots' standing requests &mdash; never an instantaneous equivalence.</li>
-        <li>World behaviour: when a robot heads somewhere it eventually arrives; it stays where it is until it moves; new tasks keep arriving over time.</li>
+        <li>Arbiters at both levels are fair: a standing request or group demand is eventually served.</li>
+        <li>Arbiters assume nothing about their requesters.</li>
+        <li>A group arbiter's upward demand is a registered, one-step delayed, aggregation of its robots' standing requests, never an instantaneous equivalence.</li>
+        <li>World behaviour: when a robot heads somewhere it eventually arrives.</li>
+        <li>It stays where it is until it moves.</li>
+        <li>New tasks keep arriving over time.</li>
       </ul>
     </details>
 
@@ -361,7 +400,7 @@
         arbiter's contract interfaces only with the root arbiter, which alone interfaces with the shared dock.
       </figcaption>
     </figure>
-    <p class="note-line">No physical-simulation GIF for this configuration yet (the certification pipeline was run at the contract/synthesis level only) &mdash; shown here is the certified contract hierarchy, matching Fig. 4 of the paper.</p>
+    <p class="note-line">No physical-simulation GIF for this configuration yet, since the certification pipeline was run at the contract and synthesis level only. Shown here is the certified contract hierarchy, matching Fig. 4 of the paper.</p>
   </div>
 </section>
 
