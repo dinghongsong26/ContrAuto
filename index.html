@@ -40,7 +40,7 @@
     details.spec summary:hover { text-decoration: underline; }
     details.spec ul { background:#f5f5f5; border-radius: 8px; padding: 16px 20px; margin-top: 12px; color:#4a4a4a; font-size:.92rem; list-style: none; }
     details.spec li { margin-bottom: 8px; padding-left: 1.4em; position: relative; }
-    details.spec li::before { content: "\25B8"; position: absolute; left: 0; color: hsl(204, 86%, 53%); font-weight: 700; }
+    details.spec li::before { content: "\2022"; position: absolute; left: 0; color: hsl(204, 86%, 53%); font-weight: 700; }
     details.spec li:last-child { margin-bottom: 0; }
     .note-line { max-width: 62rem; margin: 0 auto; text-align:left; font-style: italic; color:#555; font-size:.85rem; }
     footer.footer { background:#fafafa; }
@@ -124,10 +124,14 @@
 
 <section class="section" id="method">
   <div class="container">
-    <h2 class="title is-2" style="text-align:center;">Method</h2>
-    <figure style="max-width:640px; margin:0 auto;">
-      <img src="assets/figures/figure1.png" alt="The ACCERT framework: natural-language inputs are translated and decomposed into per-agent contracts, checked through specification grounding, compositional reasoning and controller realization, executed on a physical layer with runtime conformance monitors, and any failure feeds back as structured feedback for repair." style="width:100%; height:auto; display:block; border-radius:8px; border:1px solid #ececec;">
-    </figure>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-2">Method</h2>
+        <figure>
+          <img src="assets/figures/figure1.png" alt="The ACCERT framework: natural-language inputs are translated and decomposed into per-agent contracts, checked through specification grounding, compositional reasoning and controller realization, executed on a physical layer with runtime conformance monitors, and any failure feeds back as structured feedback for repair." style="width:100%; height:auto; display:block; border-radius:8px; border:1px solid #ececec;">
+        </figure>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -215,6 +219,14 @@
       <div class="video-col">
         <img src="assets/gifs/corridor_n3.gif" loading="lazy" alt="Physical simulation of 3 robots contending for a single-lane corridor">
         <div class="n-label">N = 3</div>
+      </div>
+      <div class="video-col">
+        <img src="assets/gifs/corridor_n4.gif" loading="lazy" alt="Physical simulation of 4 robots contending for a single-lane corridor">
+        <div class="n-label">N = 4</div>
+      </div>
+      <div class="video-col">
+        <img src="assets/gifs/corridor_n5.gif" loading="lazy" alt="Physical simulation of 5 robots contending for a single-lane corridor">
+        <div class="n-label">N = 5</div>
       </div>
     </div>
   </div>
