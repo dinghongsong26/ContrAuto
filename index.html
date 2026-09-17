@@ -22,7 +22,7 @@
     .link-block a { margin: 5px; }
     section.results { border-top: 1px solid #ececec; }
     section.results .title.is-2 { text-align: center; padding-bottom: .3rem; }
-    .task-intro { max-width: 62rem; margin: 0 auto 1.6rem; text-align: center; color: #4a4a4a; }
+    .task-intro { max-width: 62rem; margin: 0 auto 1.6rem; text-align: left; color: #4a4a4a; }
     .video-row { display:flex; flex-wrap:wrap; justify-content:center; gap: 22px; margin-bottom: 1.4rem; }
     .video-col { width: 300px; max-width: 100%; text-align: center; }
     .video-col img {
@@ -41,12 +41,12 @@
     details.spec ul { background:#f5f5f5; border-radius: 8px; padding: 16px 20px 16px 40px; margin-top: 12px; color:#4a4a4a; font-size:.92rem; }
     details.spec li { margin-bottom: 8px; }
     details.spec li:last-child { margin-bottom: 0; }
-    .note-line { max-width: 62rem; margin: 0 auto; text-align:center; font-style: italic; color:#555; font-size:.85rem; }
+    .note-line { max-width: 62rem; margin: 0 auto; text-align:left; font-style: italic; color:#555; font-size:.85rem; }
     footer.footer { background:#fafafa; }
     .cite-block {
       background:#f5f5f5; color:#363636; border: 1px solid #ececec; border-radius:8px; padding:18px 22px;
       font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size:.8rem;
-      overflow-x:auto; white-space:pre; max-width: 62rem; margin: 0 auto;
+      overflow-x:auto; white-space:pre; max-width: 62rem; margin: 0 auto; text-align:left;
     }
   </style>
 </head>
@@ -406,8 +406,8 @@
 
 <footer class="footer">
   <div class="container">
-    <div class="content has-text-centered">
-      <p style="color:#6b6558; font-size:.9rem;">
+    <div class="content">
+      <p style="color:#6b6558; font-size:.9rem; text-align:left;">
         Demos rendered from this repository's <code>outputs/</code> physical-simulation runs; requirement text is
         copied verbatim from the corresponding files in <code>contrauto/tasks/</code>.
       </p>
