@@ -269,6 +269,102 @@
   </div>
 </section>
 
+<section class="section results" id="hierarchical">
+  <div class="container">
+    <h2 class="title is-2">Scaling with a Two-Level Arbiter Tree</h2>
+    <span class="task-tag" style="display:block; width:fit-content; margin:0 auto 1rem;">Architecture: two-level arbiter tree · N = 6 robots, one shared dock</span>
+    <p class="task-intro">
+      A single flat arbiter's certified state space grows as O(2<sup>N</sup>) with team size, since it must track
+      every robot's request bit at once. Rather than making team size the limit, the framework lets the
+      <em>architecture</em> add a coordination layer: six robots are split into two groups of three, each behind its
+      own group arbiter, with both group arbiters reporting up to a root arbiter that owns the physical dock. Given
+      only this tree in the input architecture graph &mdash; not the group-level protocol &mdash; the LLM invents the
+      intermediate demand/grant interface itself, and the pipeline certifies the decomposition end to end on 3/3
+      seeds. At N&nbsp;=&nbsp;6 this shrinks the certified coordination kernel from 576 states (flat single arbiter)
+      to 74+74+12&nbsp;=&nbsp;160 states &mdash; roughly 7.8&times; smaller &mdash; while still guaranteeing exclusive
+      dock access and starvation-freedom at both levels of the tree.
+    </p>
+    <details class="spec">
+      <summary>Full requirement spec (tree_dock6.yaml)</summary>
+      <ul>
+        <li>Each robot repeatedly fetches an item from its pickup location and delivers it to the shared dock.</li>
+        <li>A robot must hold its group arbiter's dock grant before using the dock; a group arbiter may only grant while it holds the root arbiter's group grant.</li>
+        <li>At most one robot in the whole team may hold the dock at a time; at most one group may hold the root grant at a time.</li>
+        <li>A robot can pick up only while at its pickup location, and drop off only while at the dock carrying an item.</li>
+        <li>Each robot does one thing at a time and should keep completing deliveries indefinitely.</li>
+        <li>Arbiters at both levels are fair: a standing request or group demand is eventually served; arbiters assume nothing about their requesters.</li>
+        <li>A group arbiter's upward demand is a registered (one-step delayed) aggregation of its robots' standing requests &mdash; never an instantaneous equivalence.</li>
+        <li>World behaviour: when a robot heads somewhere it eventually arrives; it stays where it is until it moves; new tasks keep arriving over time.</li>
+      </ul>
+    </details>
+
+    <figure style="max-width:640px; margin:0 auto;">
+      <svg viewBox="0 0 700 320" role="img" aria-labelledby="tree-diagram-title" style="width:100%; height:auto; font-family:'Noto Sans',sans-serif;">
+        <title id="tree-diagram-title">Two-level arbiter tree: six robots, two group arbiters, one root arbiter owning the shared dock</title>
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#888"></path>
+          </marker>
+        </defs>
+
+        <!-- connectors: root <-> group arbiters -->
+        <line x1="370" y1="110" x2="165" y2="160" stroke="#888" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+        <line x1="370" y1="110" x2="575" y2="160" stroke="#888" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+        <text x="230" y="130" font-size="11" fill="#555">group demand / grant</text>
+        <text x="450" y="130" font-size="11" fill="#555">group demand / grant</text>
+
+        <!-- connectors: group arbiters <-> robots -->
+        <line x1="165" y1="200" x2="70" y2="260" stroke="#bbb" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+        <line x1="165" y1="200" x2="145" y2="260" stroke="#bbb" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+        <line x1="165" y1="200" x2="220" y2="260" stroke="#bbb" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+        <line x1="575" y1="200" x2="500" y2="260" stroke="#bbb" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+        <line x1="575" y1="200" x2="575" y2="260" stroke="#bbb" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+        <line x1="575" y1="200" x2="650" y2="260" stroke="#bbb" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+        <text x="30" y="235" font-size="11" fill="#555">dock req / grant</text>
+        <text x="500" y="235" font-size="11" fill="#555">dock req / grant</text>
+
+        <!-- connector: root <-> shared dock resource -->
+        <line x1="370" y1="34" x2="370" y2="70" stroke="#2b6cb0" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow)"></line>
+
+        <!-- shared dock resource -->
+        <rect x="300" y="0" width="140" height="34" rx="6" fill="#eaf2fb" stroke="#2b6cb0"></rect>
+        <text x="370" y="21" font-size="12" fill="#1a4a78" text-anchor="middle" font-weight="600">Shared Dock (cap. 1)</text>
+
+        <!-- root arbiter -->
+        <rect x="320" y="70" width="100" height="40" rx="6" fill="#f5f5f5" stroke="#363636"></rect>
+        <text x="370" y="95" font-size="13" fill="#363636" text-anchor="middle" font-weight="600">RootArb</text>
+
+        <!-- group arbiters -->
+        <rect x="110" y="160" width="110" height="40" rx="6" fill="#f5f5f5" stroke="#363636"></rect>
+        <text x="165" y="185" font-size="13" fill="#363636" text-anchor="middle" font-weight="600">GroupArb1</text>
+        <rect x="520" y="160" width="110" height="40" rx="6" fill="#f5f5f5" stroke="#363636"></rect>
+        <text x="575" y="185" font-size="13" fill="#363636" text-anchor="middle" font-weight="600">GroupArb2</text>
+
+        <!-- robots, group 1 -->
+        <rect x="40" y="260" width="60" height="34" rx="6" fill="#ffffff" stroke="#bbb"></rect>
+        <text x="70" y="282" font-size="12" fill="#363636" text-anchor="middle">Robot1</text>
+        <rect x="115" y="260" width="60" height="34" rx="6" fill="#ffffff" stroke="#bbb"></rect>
+        <text x="145" y="282" font-size="12" fill="#363636" text-anchor="middle">Robot2</text>
+        <rect x="190" y="260" width="60" height="34" rx="6" fill="#ffffff" stroke="#bbb"></rect>
+        <text x="220" y="282" font-size="12" fill="#363636" text-anchor="middle">Robot3</text>
+
+        <!-- robots, group 2 -->
+        <rect x="470" y="260" width="60" height="34" rx="6" fill="#ffffff" stroke="#bbb"></rect>
+        <text x="500" y="282" font-size="12" fill="#363636" text-anchor="middle">Robot4</text>
+        <rect x="545" y="260" width="60" height="34" rx="6" fill="#ffffff" stroke="#bbb"></rect>
+        <text x="575" y="282" font-size="12" fill="#363636" text-anchor="middle">Robot5</text>
+        <rect x="620" y="260" width="60" height="34" rx="6" fill="#ffffff" stroke="#bbb"></rect>
+        <text x="650" y="282" font-size="12" fill="#363636" text-anchor="middle">Robot6</text>
+      </svg>
+      <figcaption style="text-align:center; color:#555; font-size:.85rem; margin-top:10px;">
+        Contract structure: each robot's assume-guarantee contract interfaces only with its group arbiter; each group
+        arbiter's contract interfaces only with the root arbiter, which alone interfaces with the shared dock.
+      </figcaption>
+    </figure>
+    <p class="note-line">No physical-simulation GIF for this configuration yet (the certification pipeline was run at the contract/synthesis level only) &mdash; shown here is the certified contract hierarchy, matching Fig. 4 of the paper.</p>
+  </div>
+</section>
+
 <footer class="footer">
   <div class="container">
     <div class="content has-text-centered">
