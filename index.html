@@ -103,18 +103,23 @@
         <h2 class="title is-2">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Using large language models (LLMs) to turn a natural-language requirement for a multi-agent system into
-            controllers that remain correct under shared-resource contention presents a key challenge: LLMs can
-            readily decompose tasks but provide no correctness guarantees, whereas reactive synthesis is correct by
-            construction but requires hand-written specifications. We introduce a neuro-symbolic framework in which
-            LLMs translate and decompose the NL requirements into per-agent Assume&#8209;Guarantee (A/G) contracts and
-            a pipeline of certificate-ladder checks (specification grounding, compositional decomposition with
-            mechanical contract completion, GR(1) synthesis with strategy validation, and runtime conformance),
-            since a decomposition has no unique ground truth. Each failed check returns a witness traceable to one
-            contract, driving targeted LLM repair. Certified controller strategies execute on a simulated
-            control-barrier-function layer and hold mutual exclusion and freedom from starvation against every
-            environment interleaving. If execution fails, runtime conformance feeds the detected violations back into
-            the LLM repair process.
+            Using large language models (LLMs) to turn natural-language (NL) requirements for multi-agent systems
+            into controllers that remain correct under shared-resource contention presents a key challenge: LLMs can
+            readily decompose tasks but provide no correctness guarantees, whereas reactive synthesis provides
+            correctness by construction but requires hand-written formal specifications. We propose ContrAuto, a
+            neuro-symbolic framework that bridges this gap. An LLM-based Translator converts NL requirements into
+            linear temporal logic (LTL) specifications, while an LLM-based Decomposer decomposes them into per-agent
+            Assume&#8209;Guarantee (A/G) contracts. Since contract decomposition admits no unique ground truth,
+            ContrAuto defines success through a certificate ladder of checks spanning specification grounding,
+            compositional decomposition with mechanical contract completion, refinement verification, GR(1)
+            synthesis with strategy validation, and runtime conformance. Each failed check produces a traceable
+            witness, which an LLM-based Summarizer analyzes to distill failure patterns, root causes, and repair
+            strategies into persistent memory that guides subsequent Decomposer iterations, enabling targeted
+            contract repair and iterative self-improvement. Certified controller strategies are then executed over a
+            simulated control-barrier-function (CBF) layer to validate their conformance with the original NL
+            requirements. We evaluate ContrAuto on three multi-robot cyber-physical system tasks involving
+            shared-resource contention: a shared charging station, a single-lane corridor, and a warehouse with
+            shared shelf and dock resources.
           </p>
         </div>
       </div>
@@ -190,9 +195,10 @@
   <div class="container">
     <h2 class="title is-2">Single-Lane Corridor</h2>
     <p class="task-intro">
-      Robots cross a single-lane corridor from side A to side B whenever the world demands a crossing. Only one
-      robot may be inside at a time, and once the arbiter grants access it holds that grant for the whole crossing,
-      never revoking it mid-passage, while still guaranteeing every standing demand is eventually served.
+      <em>N</em> robots repeatedly cross a single-lane corridor from side A to side B. An arbiter controls entry so
+      that only one robot occupies the corridor at a time and retains each grant until the corresponding crossing is
+      complete. New crossing tasks continue to arrive, and every access request is eventually served, preventing
+      starvation.
     </p>
     <details class="spec">
       <summary>Full requirement specification</summary>
@@ -275,15 +281,15 @@
     </details>
     <div class="video-row">
       <div class="video-col">
-        <img src="assets/gifs/multi_robot_n3.gif" loading="lazy" alt="Physical simulation of 3 robots sharing a shelf and dock">
+        <img src="assets/gifs/warehouse_n3.gif" loading="lazy" alt="Physical simulation of 3 robots sharing a warehouse shelf and dock">
         <div class="n-label">N = 3</div>
       </div>
       <div class="video-col">
-        <img src="assets/gifs/multi_robot_n4.gif" loading="lazy" alt="Physical simulation of 4 robots sharing a shelf and dock">
+        <img src="assets/gifs/warehouse_n4.gif" loading="lazy" alt="Physical simulation of 4 robots sharing a warehouse shelf and dock">
         <div class="n-label">N = 4</div>
       </div>
       <div class="video-col">
-        <img src="assets/gifs/multi_robot_n5.gif" loading="lazy" alt="Physical simulation of 5 robots sharing a shelf and dock">
+        <img src="assets/gifs/warehouse_n5.gif" loading="lazy" alt="Physical simulation of 5 robots sharing a warehouse shelf and dock">
         <div class="n-label">N = 5</div>
       </div>
     </div>
