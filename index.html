@@ -144,7 +144,7 @@
   <div class="container">
     <h2 class="title is-2">Shared Charging Station</h2>
     <p class="task-intro">
-      N robots keep working until their battery runs low. During every low-battery episode a robot requests the
+      <em>N</em> robots keep working until their battery runs low. During every low-battery episode a robot requests the
       shared charger, drives to it, and charges once it holds exclusive access. The arbiter guarantees fair,
       mutually exclusive service, so no robot is ever left waiting forever.
     </p>
@@ -242,10 +242,10 @@
   <div class="container">
     <h2 class="title is-2">Warehouse Shelf and Dock</h2>
     <p class="task-intro">
-      N robots continuously fetch items from a shared shelf and deliver them to a shared dock. Two independent
-      arbiters, one per resource, grant exclusive access, since holding the shelf and holding the dock are never
-      mutually exclusive with each other. A robot may travel and wait freely; only the final pickup or drop-off step
-      requires the matching grant, and every request is eventually served.
+      <em>N</em> robots continuously fetch items from a shared shelf and deliver them to a shared dock. Each robot
+      selects an available item at the shelf for pickup, while an arbiter grants exclusive access to the dock so
+      that only one robot may occupy it at a time. A robot may travel toward the dock freely but waits outside
+      until access is granted, and every request is eventually granted.
     </p>
     <details class="spec">
       <summary>Full requirement specification</summary>
