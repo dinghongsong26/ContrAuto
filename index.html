@@ -55,7 +55,7 @@
         <div class="column is-10">
           <h1 class="title is-1 publication-title">
             🤖 ContrAuto <br>
-            <span style="font-weight:400;">Neuro-Symbolic Task Decomposition for Reactive<br>Multi-Agent Controller Synthesis via Traceable Refinement</span>
+            <span style="font-weight:400;">Agentic Contract-Based Reactive Synthesis for Multi-Robot<br>Systems via Traceable Refinement</span>
           </h1>
           <h2 class="subtitle is-4 publication-venue" style="margin-top:.8rem;">
             Under review · ICLR 2027
@@ -103,23 +103,23 @@
         <h2 class="title is-2">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Using large language models (LLMs) to turn natural-language (NL) requirements for multi-agent systems
-            into controllers that remain correct under shared-resource contention presents a key challenge: LLMs can
-            readily decompose tasks but provide no correctness guarantees, whereas reactive synthesis provides
-            correctness by construction but requires hand-written formal specifications. We propose ContrAuto, a
-            neuro-symbolic framework that bridges this gap. An LLM-based Translator converts NL requirements into
-            linear temporal logic (LTL) specifications, while an LLM-based Decomposer decomposes them into per-agent
-            Assume&#8209;Guarantee (A/G) contracts. Since contract decomposition admits no unique ground truth,
-            ContrAuto defines success through a certificate ladder of checks spanning specification grounding,
-            compositional decomposition with mechanical contract completion, refinement verification, GR(1)
-            synthesis with strategy validation, and runtime conformance. Each failed check produces a traceable
-            witness, which an LLM-based Summarizer analyzes to distill failure patterns, root causes, and repair
-            strategies into persistent memory that guides subsequent Decomposer iterations, enabling targeted
-            contract repair and iterative self-improvement. Certified controller strategies are then executed over a
-            simulated control-barrier-function (CBF) layer to validate their conformance with the original NL
-            requirements. We evaluate ContrAuto on three multi-robot cyber-physical system tasks involving
-            shared-resource contention: a shared charging station, a single-lane corridor, and a warehouse with
-            shared shelf and dock resources.
+            Large language models (LLMs) are increasingly being used for natural language (NL)-guided robot control,
+            grounding specifications, decomposing tasks, and generating plans for multi-robot systems. However,
+            these pipelines either stop at task decomposition and execution or verify a single plan or controller,
+            leaving it unclear whether the multi-robot behavior satisfies the system requirement under reactive
+            execution. We present an agentic contract-based reactive synthesis framework for multi-robot systems.
+            Given system architecture and NL requirements, a Translator converts them into linear temporal logic
+            (LTL) specifications, and a Decomposer formalizes them into a system-level assume-guarantee (A/G)
+            contract and component-level contracts, followed by a verification pipeline. The pipeline checks whether
+            the generated contracts match the translated specifications, whether the composed component-level
+            contracts refine the system contract, and whether each component-level contract is realizable by a
+            reactive controller. Each failed check returns a traceable witness that localizes the responsible
+            contract for automatic repair with predefined rules, or reports to the Decomposer for LLM-guided repair,
+            iterating until all checks pass. The synthesized controllers are then executed in simulation, with
+            runtime monitors checking behaviors against the contracts. Experiments on three shared-resource tasks
+            show that the synthesized controllers satisfy the specified requirements under the valid environments,
+            demonstrating efficient synthesis with verification feedback, and the framework supports larger
+            multi-robot systems through hierarchical decomposition.
           </p>
         </div>
       </div>
@@ -133,7 +133,7 @@
       <div class="column is-four-fifths">
         <h2 class="title is-2">Method</h2>
         <figure>
-          <img src="assets/figures/figure1.png" alt="The ACCERT framework: natural-language inputs are translated and decomposed into per-agent contracts, checked through specification grounding, compositional reasoning and controller realization, executed on a physical layer with runtime conformance monitors, and any failure feeds back as structured feedback for repair." style="width:100%; height:auto; display:block; border-radius:8px; border:1px solid #ececec;">
+          <img src="assets/figures/figure1.png" alt="The ContrAuto framework: NL requirements, atomic propositions, and the architecture feed a Translator and Decomposer that produce component-level contracts, checked through specification grounding and compositional reasoning, realized as certified controllers through controller realization, executed on robots with a continuous layer, and monitored by runtime conformance, with witnesses and feedback driving mechanical repair and certified blocks reused across rounds." style="width:100%; height:auto; display:block; border-radius:8px; border:1px solid #ececec;">
         </figure>
       </div>
     </div>
@@ -290,6 +290,37 @@
       </div>
       <div class="video-col">
         <img src="assets/gifs/warehouse_n5.gif" loading="lazy" alt="Physical simulation of 5 robots sharing a warehouse shelf and dock">
+        <div class="n-label">N = 5</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section results" id="drone-generalization">
+  <div class="container">
+    <h2 class="title is-2">Generalizing to 3D Drone Delivery</h2>
+    <p class="task-intro">
+      The certified controllers synthesized for the warehouse shelf-and-dock task are discrete finite-state
+      machines defined only over atomic propositions such as being at the shelf, being at the dock, requesting, and
+      holding a grant. They make no reference to how those propositions are grounded in the physical world, so the
+      same certified FSMs and the same dock arbiter, unchanged and without any resynthesis or repair, are reused to
+      coordinate quadrotor drones in a 3D physical simulator instead of ground robots on a 2D control-barrier-function
+      layer. Each drone still only picks up an item once it holds the shelf grant and only docks once it
+      holds the dock grant, and the arbiter still guarantees mutual exclusion and fairness at the dock across
+      <em>N</em> drones, showing that the certified coordination logic transfers directly across physical
+      realizations.
+    </p>
+    <div class="video-row">
+      <div class="video-col">
+        <img src="assets/gifs/warehouse_drone_n3.gif" loading="lazy" alt="3D physical simulation of 3 drones executing the certified warehouse shelf-and-dock controller">
+        <div class="n-label">N = 3</div>
+      </div>
+      <div class="video-col">
+        <img src="assets/gifs/warehouse_drone_n4.gif" loading="lazy" alt="3D physical simulation of 4 drones executing the certified warehouse shelf-and-dock controller">
+        <div class="n-label">N = 4</div>
+      </div>
+      <div class="video-col">
+        <img src="assets/gifs/warehouse_drone_n5.gif" loading="lazy" alt="3D physical simulation of 5 drones executing the certified warehouse shelf-and-dock controller">
         <div class="n-label">N = 5</div>
       </div>
     </div>
