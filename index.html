@@ -144,14 +144,14 @@
   <div class="container">
     <h2 class="title is-2">Shared Charging Station</h2>
     <p class="task-intro">
-      <em>N</em> robots keep working until their battery runs low. During every low-battery episode a robot requests the
+      <em>N</em> robots perform their tasks while remaining stationary until their battery runs low. During every low-battery episode a robot requests the
       shared charger, drives to it, and charges once it holds exclusive access. The arbiter guarantees fair,
       mutually exclusive service, so no robot is ever left waiting forever.
     </p>
     <details class="spec">
       <summary>Full requirement specification</summary>
       <ul>
-        <li>Each robot works.</li>
+        <li>Each robot performs its task while remaining stationary.</li>
         <li>During every low-battery episode it requests the shared charger, drives to it, and charges once access and the charger location are available.</li>
         <li>A robot must hold the charging station's exclusive access before it starts charging.</li>
         <li>At most one robot may charge at the station at a time.</li>
