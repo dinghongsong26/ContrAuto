@@ -55,7 +55,7 @@
         <div class="column is-10">
           <h1 class="title is-1 publication-title">
             🤖 ContrAuto <br>
-            <span style="font-weight:400;">Agentic Contract-Based Reactive Synthesis for Multi-Robot<br>Systems via Traceable Refinement</span>
+            <span style="font-weight:400;">Agentic Contract-Based Reactive Synthesis<br>for Multi-Agent Systems</span>
           </h1>
           <h2 class="subtitle is-4 publication-venue" style="margin-top:.8rem;">
             Under review · ICLR 2027
@@ -104,22 +104,25 @@
         <div class="content has-text-justified">
           <p>
             Large language models (LLMs) are increasingly being used for natural language (NL)-guided robot control,
-            grounding specifications, decomposing tasks, and generating plans for multi-robot systems. However,
-            these pipelines either stop at task decomposition and execution or verify a single plan or controller,
-            leaving it unclear whether the multi-robot behavior satisfies the system requirement under reactive
-            execution. We present an agentic contract-based reactive synthesis framework for multi-robot systems.
-            Given system architecture and NL requirements, a Translator converts them into linear temporal logic
-            (LTL) specifications, and a Decomposer formalizes them into a system-level assume-guarantee (A/G)
-            contract and component-level contracts, followed by a verification pipeline. The pipeline checks whether
-            the generated contracts match the translated specifications, whether the composed component-level
-            contracts refine the system contract, and whether each component-level contract is realizable by a
-            reactive controller. Each failed check returns a traceable witness that localizes the responsible
-            contract for automatic repair with predefined rules, or reports to the Decomposer for LLM-guided repair,
-            iterating until all checks pass. The synthesized controllers are then executed in simulation, with
-            runtime monitors checking behaviors against the contracts. Experiments on three shared-resource tasks
-            show that the synthesized controllers satisfy the specified requirements under the valid environments,
-            demonstrating efficient synthesis with verification feedback, and the framework supports larger
-            multi-robot systems through hierarchical decomposition.
+            promising to help solve challenging design problems, such as automatically decomposing tasks and
+            generating plans for multi-robot systems. However, existing LLM-based pipelines are mostly limited to
+            either proposing and testing promising task decompositions, or performing verification of simple,
+            single-agent controllers and plans. Rigorous verification layers that can ensure the correctness of
+            multi-agent behaviors at scale in LLM-aided reactive system synthesis have been elusive. In this paper,
+            we present an agentic compositional reactive synthesis framework for multi-agent systems. Given a system
+            architecture and NL requirements, a Translator converts the requirements into linear temporal logic (LTL)
+            specifications, while a Decomposer further structures them into a system-level assume-guarantee contract
+            and a set of component-level contracts. The Decomposer is connected in a loop with a contract-based
+            verification layer that performs a set of checks, including whether the generated contracts match the
+            translated specification, whether the composition of component-level contracts refines the system
+            contract, and whether each component-level contract is realizable by a reactive controller. Each failed
+            check returns a traceable witness that localizes the responsible contracts for automatic rule-based or
+            LLM-guided repair, until all checks pass. Our verification layer also includes the generation of runtime
+            monitors from contracts, which can be used to further validate the synthesized controllers in their
+            operational environment in simulation. Evaluation on three tasks motivated by multi-robot coordination
+            problems in accessing limited resources shows the effectiveness of combining LLM guidance with
+            hierarchical contract-based decomposition towards scalable and verified generation of multi-agent
+            controllers from NL requirements.
           </p>
         </div>
       </div>
